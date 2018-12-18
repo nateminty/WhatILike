@@ -6,22 +6,24 @@ package expe;
 
 import java.util.Scanner;
 import java.io.*;
+
 import javax.swing.JOptionPane;
 
 public class WhatILike {
 
 	public static void main(String[] args) throws IOException
 	{	
-		Scanner scan = new Scanner(System.in);
+		//Edit this line with the directory of where til.txt is stored
+		File f = new File(parseLoc());
+		//
 		
-		File f = new File("/Users/nmintz22/Desktop/hey/til.txt");
+		f.createNewFile();
 		
 		Scanner read = new Scanner(f);
 		
 		String options[] = {"Quit", "View What I Like", "Add What I Like"};
 		
-		BufferedWriter writer = new BufferedWriter(new FileWriter("/Users/nmintz22/Desktop/hey/til.txt",true));
-		Scanner reader = new Scanner("/Users/nmintz22/Desktop/hey/til.txt");
+		BufferedWriter writer = new BufferedWriter(new FileWriter(f,true));
 		
 		boolean b = true;
 		int input = 10;
@@ -32,12 +34,14 @@ public class WhatILike {
 			
 			if(input == 2)
 			{
-				addTIL(writer);
+				addTIL(writer, read, f);
 			}
 			else if(input == 1)
 			{
 				String name = JOptionPane.showInputDialog(null, "Enter your name");
 				String realName = "";
+				
+				boolean q = true;
 				
 				String l = "";
 				String til = "";
@@ -54,14 +58,24 @@ public class WhatILike {
 							l =  realName + " likes " + til;
 							
 							JOptionPane.showMessageDialog(null, l);
+							
+							q = false;
 						}
 					}
 				}
-
+				
+				if(name.equals("") || name.equals(null))
+				{
+					JOptionPane.showMessageDialog(null, "Please search for a real name");
+				}
+				else if(q)
+				{
+					JOptionPane.showMessageDialog(null, "Please enter a name in the database");
+				}
+				
 				read = null;
 				
 				read = new Scanner(f);
-
 			}
 			else if(input == 0)
 			{
@@ -70,16 +84,77 @@ public class WhatILike {
 		}
 	}
 	
-	public static void addTIL(BufferedWriter writer) throws IOException
-	{
-		String name = JOptionPane.showInputDialog(null, "Enter your name");
+	public static void addTIL(BufferedWriter writer, Scanner read, File f) throws IOException
+	{	
+		boolean t = true;
 		
-		String fav = JOptionPane.showInputDialog(null, "Enter your favorite thing");
+		String name = JOptionPane.showInputDialog(null, "Enter your name");
+	
+		if(name.equals("") || name.equals(null))
+		{
+			JOptionPane.showMessageDialog(null, "Please enter a name");
+		}
+		else
+		{
+			String fav = JOptionPane.showInputDialog(null, "Enter your favorite thing");
 			
-		writer.write(name + " likes " + fav + " *");
-		writer.newLine();
+			if(checkTIL(read, f, name))
+			{
+				writer.write(name + " likes " + fav + " *");
+				writer.newLine();
+						
+				writer.close();
+			}
+			else
+				JOptionPane.showMessageDialog(null, "Name already exists");
+			}
+		}
+	
+
+	public static boolean checkTIL(Scanner read, File f, String name) throws IOException
+	{
+		read = null;
+		
+		read = new Scanner(f);
+		
+		while(read.hasNext())
+		{
+			if(read.next().equals(name))
+			{
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public static String parseLoc()
+	{
+		String generic = System.getProperty("user.dir");
+		boolean b = true;
+		int count = 0;
+		int i = 0;
+		
+		while(b)
+		{	
+			if(generic.charAt(i) == '/')
+			{
+				count++;
+				
+				if(count == 3)
+				{
+					generic = generic.substring(0, i);
+					System.out.println(generic);
+					b = false;
+				}
+			}
 			
-		writer.close();
+			i++;
+		}
+		
+		String g2 = generic + "/Desktop/til.txt";
+		
+		return g2;
 	}
 
 }
