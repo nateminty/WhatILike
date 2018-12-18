@@ -1,5 +1,7 @@
-# WhatILike
-WhatILike database project
+# WhatILike Database
+WhatILike database project written by Nate Mintz
+
+*WIL* is a database of people's names and their favorite things. I used famous people to initially fill up the DB, but you can just delete the contents of **til.txt** to empty the DB.
 
 *See til.txt for database*
 
